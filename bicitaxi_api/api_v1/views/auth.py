@@ -6,6 +6,10 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import authentication_classes
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from bicitaxi_api.api_v1.models import User, Profile
 from bicitaxi_api.settings import URL_SERVER
@@ -42,6 +46,21 @@ class AuthView(APIView):
                 "message": _("Correo o contraseña incorrecta"),
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+
+@authentication_classes((TokenAuthentication,))
+@permission_classes((IsAuthenticated,))
+class LogoutView(APIView):
+    """
+    View for logout user
+    """
+
+    def post(self, request):
+        if request.user.is_anonymous:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        token = Token.objects.get(user=request.user)
+        token.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ResetPasswordView(APIView):
