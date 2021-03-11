@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -19,43 +20,43 @@ msgstr ""
 
 #: bicitaxi_api/api_v1/models.py:31
 msgid "email address"
-msgstr "correo electrónico"
+msgstr ""
 
 #: bicitaxi_api/api_v1/serializers/users.py:58
 #: bicitaxi_api/api_v1/serializers/users.py:67
 #, python-format
 msgid "El correo %(email)s ya se encuentra en uso"
-msgstr "The email %(email)s is already used"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/auth.py:42
 msgid "Correo o contraseña incorrecta"
-msgstr "Wrong email or password"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/location_zones.py:35
 msgid "No tienes permisos para realizar esta acción"
-msgstr "You don't have permissions to this action"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/location_zones.py:44
 msgid "Debes proporcionar los vértices de la zona"
-msgstr "You should send the zone vertices"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/location_zones.py:52
 msgid "Debes proporcionar al menos 3 vértices de la zona"
-msgstr "You should send at least three vertices for the zone"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/location_zones.py:70
 msgid "Ocurrió un error al almacenar uno de los vértices de la zona"
-msgstr "An error has occurred when trying to save the zone vertices"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/location_zones.py:78
 msgid "Error al crear la zona"
-msgstr "Error while creating the zone"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/location_zones.py:94
 #: bicitaxi_api/api_v1/views/location_zones.py:112
 #: bicitaxi_api/api_v1/views/location_zones.py:141
 msgid "Zona no encontrada"
-msgstr "Zone not found"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/location_zones.py:103
 #: bicitaxi_api/api_v1/views/location_zones.py:132
@@ -64,62 +65,62 @@ msgstr "Zone not found"
 #: bicitaxi_api/api_v1/views/users.py:63 bicitaxi_api/api_v1/views/users.py:97
 #: bicitaxi_api/api_v1/views/users.py:140
 msgid "No tienes permisos para realizar está acción."
-msgstr "You don't have permissions to this action"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/location_zones.py:125
 msgid "Error al actualizar la zona"
-msgstr "Error updating the zone"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/locations.py:31
 msgid ""
 "Se debe indicar los valores 'from' y 'to' para hacer el filtrado por fecha"
-msgstr "You should provide the 'from' and 'to' values"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/locations.py:46
 msgid "La fecha de fin no puede ser menor a la fecha de inicio"
-msgstr "The end date should be grater than the start date"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/locations.py:66
 msgid "Error al crear la ubicación"
-msgstr "Error while creating the location"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/locations.py:82
 msgid "Ubicación no encontrada"
-msgstr "Location not found"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/users.py:36
 msgid "Error al crear al usuario"
-msgstr "Error while creating user"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/users.py:53 bicitaxi_api/api_v1/views/users.py:72
 #: bicitaxi_api/api_v1/views/users.py:112
 msgid "Usuario no encontrado"
-msgstr "User not found"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/users.py:90
 msgid "Error al actualizar al usuario"
-msgstr "Error while updating user"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/users.py:135
 msgid "La contraseña actual es inválida."
-msgstr "The password is invalid"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/validations.py:29
 msgid "Debes indicar el ID de la zona y la coordenada a validar"
-msgstr "You should send the location zone ID and their coors"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/validations.py:41
 msgid "No se encontró la zona indicada"
-msgstr "Location zone not found"
+msgstr ""
 
 #: bicitaxi_api/api_v1/views/validations.py:56
 msgid "La coordenada indicada es inválida"
-msgstr "The coordinate is invalid"
+msgstr ""
 
 #: bicitaxi_api/settings.py:144
 msgid "Español"
-msgstr "Spanish"
+msgstr ""
 
 #: bicitaxi_api/settings.py:145
 msgid "Inglés"
-msgstr "English"
+msgstr ""

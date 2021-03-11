@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext as _
+from django.utils.translation import activate, ugettext_lazy as _
 
 from rest_framework import status
 from rest_framework.views import APIView
