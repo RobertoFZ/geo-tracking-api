@@ -5,6 +5,7 @@ from bicitaxi_api.api_v1.urls import locations
 from bicitaxi_api.api_v1.urls import location_zones
 from bicitaxi_api.api_v1.urls import validations
 from bicitaxi_api.api_v1.urls import auth
+from bicitaxi_api.api_v1.urls import location_assignations
 
 
 urlpatterns = [
@@ -13,5 +14,6 @@ urlpatterns = [
     path("locations/", include((locations, "locations"))),
     path("location_zones/", include((location_zones, "location zones"))),
     path("validations/", include((validations, "validations"))),
+    path("location_assignations/", include((location_assignations, "location assignations"))),
     path("auth/", include((auth, "auth"))),
 ]

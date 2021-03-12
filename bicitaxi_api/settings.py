@@ -151,7 +151,7 @@ LOCALE_PATHS = (
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Merida'
 
 USE_I18N = True
 

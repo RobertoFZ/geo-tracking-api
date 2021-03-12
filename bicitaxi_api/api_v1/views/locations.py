@@ -11,10 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
 from datetime import datetime, date
 
-from bicitaxi_api.api_v1.models import User, Location
+from bicitaxi_api.api_v1.models import User, Location, Profile
 from bicitaxi_api.common.pagination import PaginationHandlerMixin
 from bicitaxi_api.settings import URL_SERVER
 from bicitaxi_api.api_v1.serializers.locations import LocationSerializer
+from bicitaxi_api.api_v1.serializers.users import UserSerializer, UserSimpleSerializer
 
 
 @authentication_classes((TokenAuthentication,))
@@ -86,6 +87,34 @@ class LocationView(APIView):
         if request.user.role == 'admin':
             serializer = self.serializer_class(data=location)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": _("No tienes permisos para realizar está acción.")},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+
+@authentication_classes((TokenAuthentication,))
+@permission_classes((IsAuthenticated,))
+class LastLocationsView(APIView):
+    serializer_class = LocationSerializer
+
+    def get(self, request):
+        if request.user.role == 'admin':
+            all_users = User.objects.all()
+            users = []
+            for user in all_users:
+                user.profile = Profile.objects.get(user=user)
+                last_location = None
+                last_locations = Location.objects.filter(user=user).order_by('-date')
+                if len(last_locations) > 0:
+                    last_location = last_locations[0]
+                users.append({
+                    'user': UserSimpleSerializer(user).data,
+                    'location': LocationSerializer(last_location).data if last_location != None else None
+                })
+
+            return Response(users, status=status.HTTP_200_OK)
         else:
             return Response(
                 {"message": _("No tienes permisos para realizar está acción.")},

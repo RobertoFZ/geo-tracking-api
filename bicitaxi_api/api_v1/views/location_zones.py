@@ -11,10 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
 from datetime import datetime, date
 
-from bicitaxi_api.api_v1.models import LocationZone, LocationZonePoint
+from bicitaxi_api.api_v1.models import LocationZone, LocationZonePoint, LocationAssignation
 from bicitaxi_api.common.pagination import PaginationHandlerMixin
 from bicitaxi_api.settings import URL_SERVER
 from bicitaxi_api.api_v1.serializers.location_zones import LocationZoneSerializer
+from bicitaxi_api.api_v1.serializers.users import UserActivitySerializer
 
 
 @authentication_classes((TokenAuthentication,))
@@ -53,7 +54,7 @@ class LocationZonesView(APIView, PaginationHandlerMixin):
                     "errors": [],
                 }
                 return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
-                
+
             location_zone = serializer.create(serializer.validated_data)
 
             try:
@@ -151,3 +152,31 @@ class LocationZoneView(APIView):
                 {"message": _("No tienes permisos para realizar está acción.")},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
+
+
+@authentication_classes((TokenAuthentication,))
+@permission_classes((IsAuthenticated,))
+class LocationZoneUsersView(APIView):
+    serializer_class = LocationZoneSerializer
+
+    def get(self, request):
+        if request.user.role != 'admin':
+            return Response(
+                {"message": _("No tienes permisos para realizar está acción.")},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        location_zones = LocationZone.objects.filter(deleted_at=None)
+        zones_data = []
+
+        for location_zone in location_zones:
+            assignations = LocationAssignation.objects.filter(
+                location_zone=location_zone)
+            users = []
+            for assignation in assignations:
+                users.append(assignation.user)
+            zones_data.append({
+                'location_zone': self.serializer_class(location_zone).data,
+                'users': UserActivitySerializer(users, many=True).data
+            })
+        
+        return Response(zones_data, status=status.HTTP_200_OK)

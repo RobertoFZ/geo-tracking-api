@@ -54,7 +54,7 @@ class Location(BaseModel):
     longitude = models.CharField(max_length=200)
 
     def __str__(self):
-        return "%s - %s, %s" % (self.user.name, self.latitude, self.longitude)
+        return "%s - %s, %s" % (self.user.email, self.latitude, self.longitude)
 
 class LocationZone(BaseModel):
     # Attributes
@@ -74,3 +74,10 @@ class LocationZonePoint(BaseModel):
 
     def __str__(self):
         return "%s Point" % self.location_zone.name
+
+class LocationAssignation(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    location_zone = models.ForeignKey(LocationZone, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "%s - %s" % (self.user.email, self.location_zone.name)

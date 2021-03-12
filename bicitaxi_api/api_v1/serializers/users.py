@@ -1,10 +1,13 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from bicitaxi_api.api_v1.functions import distance_between_two_points
+import datetime
 
 from bicitaxi_api.api_v1.models import (
     User,
     Profile,
+    Location
 )
 from bicitaxi_api.settings import URL_SERVER
 
@@ -78,3 +81,56 @@ class UserSerializer(serializers.ModelSerializer):
             return token.key
         else:
             return None
+
+
+class UserSimpleSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, label="user id")
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "is_active",
+            "profile",
+        ]
+        read_only_fields = ["id"]
+
+
+class UserActivitySerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, label="user id")
+    profile = serializers.SerializerMethodField()
+    activity = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "is_active",
+            "profile",
+            "activity",
+        ]
+        read_only_fields = ["id"]
+
+    def get_profile(self, user):
+        return ProfileSerializer(Profile.objects.get(user=user)).data
+
+    def get_activity(self, user):
+        day_start = datetime.datetime.now().replace(hour=0, minute=0, second=0)
+        now = datetime.datetime.now()
+        registers = Location.objects.filter(
+            user=user, date__range=(day_start, now))
+        distance = 0.0
+        last_register = None
+        for register in registers:
+            if last_register:
+                distance += distance_between_two_points(
+                    last_register, register)
+            last_register = register
+        return distance

@@ -4,6 +4,7 @@ import string
 
 import sys
 from django.core.mail import EmailMultiAlternatives
+from math import sin, cos, sqrt, atan2, radians
 
 
 def send_email(subject, content, to, content_type="text/plain"):
@@ -41,7 +42,26 @@ def format_sys_errors(user_sys, with_traceback=False):
         return ""
 
 
-def generateOrderString(sufix = '', stringLength=10):
+def generateOrderString(sufix='', stringLength=10):
     letters = string.ascii_lowercase
-    randomOrderString = ''.join(random.choice(letters) for i in range(stringLength))
+    randomOrderString = ''.join(random.choice(letters)
+                                for i in range(stringLength))
     return "%s-%s" % (sufix, randomOrderString)
+
+
+def distance_between_two_points(point_one, point_two):
+    # approximate radius of earth in km
+    r = 6373.0
+
+    lat1 = radians(float(point_one.latitude))
+    lon1 = radians(float(point_one.longitude))
+    lat2 = radians(float(point_two.latitude))
+    lon2 = radians(float(point_two.longitude))
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    return round(r * c, 2)
