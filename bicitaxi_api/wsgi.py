@@ -21,6 +21,5 @@ sys.path.append('/var/www/bicitaxi-api')
 sys.path.append('/var/www/bicitaxi-api/bicitaxi_api')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'bicitaxi_api.settings'
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bicitaxi_api.settings')
 
 application = get_wsgi_application()
