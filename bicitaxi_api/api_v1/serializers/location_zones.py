@@ -12,7 +12,7 @@ from bicitaxi_api.api_v1.serializers.location_zone_points import LocationZonePoi
 class LocationZoneSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, label="location id")
     name = serializers.CharField(required=True, label="location zone name")
-    color = serializers.CharField(required=True, label="location zone color")
+    color = serializers.CharField(required=False, label="location zone color")
     points = serializers.SerializerMethodField()
 
     class Meta:
