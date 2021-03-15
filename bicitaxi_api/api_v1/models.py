@@ -29,7 +29,9 @@ class User(AbstractUser):
 
     username = None
     email = models.EmailField(_("email address"), unique=True)
-    role = models.CharField(max_length=200, default='driver', choices=USER_ROLES)
+    role = models.CharField(
+        max_length=200, default='driver', choices=USER_ROLES)
+    on_route = models.BooleanField(default=False)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -40,9 +42,12 @@ class Profile(BaseModel):
 
     # Attributes
     locale = models.CharField(default="es", max_length=2)
+    phone = models.CharField(max_length=255, blank=True, null=True)
+    municipality = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return "%s Profile's" % (self.user.email)
+
 
 class Location(BaseModel):
     # Relations
@@ -56,12 +61,15 @@ class Location(BaseModel):
     def __str__(self):
         return "%s - %s, %s" % (self.user.email, self.latitude, self.longitude)
 
+
 class LocationZone(BaseModel):
     # Attributes
     name = models.CharField(max_length=255)
+    color = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
 
 class LocationZonePoint(BaseModel):
     # Relations
@@ -74,6 +82,7 @@ class LocationZonePoint(BaseModel):
 
     def __str__(self):
         return "%s Point" % self.location_zone.name
+
 
 class LocationAssignation(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

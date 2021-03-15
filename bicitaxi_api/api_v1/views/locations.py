@@ -11,10 +11,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
 from datetime import datetime, date
 
-from bicitaxi_api.api_v1.models import User, Location, Profile
+from bicitaxi_api.api_v1.models import User, Location, Profile, LocationAssignation
 from bicitaxi_api.common.pagination import PaginationHandlerMixin
 from bicitaxi_api.settings import URL_SERVER
 from bicitaxi_api.api_v1.serializers.locations import LocationSerializer
+from bicitaxi_api.api_v1.serializers.location_zones import LocationZoneSerializer
 from bicitaxi_api.api_v1.serializers.users import UserSerializer, UserSimpleSerializer
 
 
@@ -107,11 +108,16 @@ class LastLocationsView(APIView):
                 user.profile = Profile.objects.get(user=user)
                 last_location = None
                 last_locations = Location.objects.filter(user=user).order_by('-date')
+                zone_assignations = LocationAssignation.objects.filter(user=user)
+                location_zone = None
+                if len(zone_assignations) > 0:
+                    location_zone = zone_assignations[0].location_zone
                 if len(last_locations) > 0:
                     last_location = last_locations[0]
                 users.append({
                     'user': UserSimpleSerializer(user).data,
-                    'location': LocationSerializer(last_location).data if last_location != None else None
+                    'location': LocationSerializer(last_location).data if last_location != None else None,
+                    'location_zone': LocationZoneSerializer(location_zone).data if location_zone != None else None
                 })
 
             return Response(users, status=status.HTTP_200_OK)

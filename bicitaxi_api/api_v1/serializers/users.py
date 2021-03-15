@@ -15,7 +15,7 @@ from bicitaxi_api.settings import URL_SERVER
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["locale"]
+        fields = ["locale", "phone", "municipality"]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "email",
+            "on_route",
             "password",
             "is_active",
             "token",
@@ -86,6 +87,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserSimpleSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, label="user id")
     profile = ProfileSerializer()
+    last_connection = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -95,9 +97,17 @@ class UserSimpleSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "is_active",
+            "on_route",
             "profile",
+            "last_connection"
         ]
         read_only_fields = ["id"]
+
+    def get_last_connection(self, user):
+        registers = Location.objects.filter(user=user).order_by('-date')
+        if len(registers) > 0:
+            return registers[0].date
+        return None
 
 
 class UserActivitySerializer(serializers.ModelSerializer):
@@ -113,6 +123,7 @@ class UserActivitySerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "is_active",
+            "on_route",
             "profile",
             "activity",
         ]

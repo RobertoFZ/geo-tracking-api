@@ -98,6 +98,20 @@ class UserView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
+    def patch(self, request, user_pk):
+        try:
+            user = User.objects.get(pk=user_pk)
+        except User.DoesNotExist:
+            return Response(
+                {"message": _("Usuario no encontrado")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        user.on_route = request.data['on_route']
+        user.save()
+        user.profile = Profile.objects.get(user=user)
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @authentication_classes((TokenAuthentication,))
 @permission_classes((IsAuthenticated,))
