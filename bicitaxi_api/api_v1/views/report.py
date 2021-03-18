@@ -28,6 +28,7 @@ class ReportView(APIView, PaginationHandlerMixin):
     pagination_class = LimitOffsetPagination
 
     def post(self, request):
+        params = request.query_params.keys()
         keys = request.data.keys()
 
         if not 'from' in keys or not 'to' in keys:
@@ -113,7 +114,7 @@ class ReportView(APIView, PaginationHandlerMixin):
             })
 
         page = self.paginate_queryset(user_data)
-        if page is not None and 'limit' in keys:
+        if page is not None and 'limit' in params:
             response = self.get_paginated_response(page).data
         else:
             response = user_data
