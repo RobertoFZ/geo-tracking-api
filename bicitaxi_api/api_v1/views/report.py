@@ -18,12 +18,14 @@ from bicitaxi_api.api_v1.serializers.locations import LocationSerializer
 from bicitaxi_api.api_v1.serializers.location_zones import LocationZoneSerializer
 from bicitaxi_api.api_v1.serializers.users import UserSerializer, UserSimpleSerializer
 from bicitaxi_api.api_v1.functions import distance_between_two_points
+from bicitaxi_api.api_v1.serializers.reports import ReportSerializer
 
 
 @authentication_classes((TokenAuthentication,))
 @permission_classes((IsAuthenticated,))
 class ReportView(APIView, PaginationHandlerMixin):
-    serializer_class = LocationSerializer
+    serializer_class = ReportSerializer
+    pagination_class = LimitOffsetPagination
 
     def post(self, request):
         keys = request.data.keys()
@@ -105,9 +107,14 @@ class ReportView(APIView, PaginationHandlerMixin):
                 'locations': LocationSerializer(registers, many=True).data,
                 'location_zone': LocationZoneSerializer(location_zone).data,
                 'user': UserSimpleSerializer(user).data,
-                'from': start_date,
-                'to': end_date,
+                'start_date': start_date,
+                'end_date': end_date,
                 'time': time
             })
 
-        return Response(user_data, status=status.HTTP_200_OK)
+        page = self.paginate_queryset(user_data)
+        if page is not None and 'limit' in keys:
+            response = self.get_paginated_response(page).data
+        else:
+            response = user_data
+        return Response(response, status=status.HTTP_200_OK)
