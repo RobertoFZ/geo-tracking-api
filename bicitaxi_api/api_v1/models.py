@@ -31,7 +31,7 @@ class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
     role = models.CharField(
         max_length=200, default='driver', choices=USER_ROLES)
-    on_route = models.BooleanField(default=False)
+    on_route = models.BooleanField(default=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
