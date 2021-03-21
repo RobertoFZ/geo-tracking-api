@@ -33,6 +33,11 @@ class LocationAssignationsView(APIView, PaginationHandlerMixin):
             return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
 
         if serializer.is_valid():
+            try:
+                existing_record = LocationAssignation.objects.filter(user_id=request.data['user_id'])
+                existing_record.delete()
+            except:
+                pass
             location_assignation = serializer.create(serializer.validated_data)
             response = self.serializer_class(location_assignation).data
             return Response(response, status=status.HTTP_201_CREATED)

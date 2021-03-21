@@ -1,7 +1,9 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from bicitaxi_api.api_v1.models import LocationAssignation
 from bicitaxi_api.api_v1.functions import distance_between_two_points
+from bicitaxi_api.api_v1.serializers.location_assignations import LocationAssignationSerializer
 import datetime
 
 from bicitaxi_api.api_v1.models import (
@@ -23,6 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
     email = serializers.CharField(required=True, label="email")
     token = serializers.SerializerMethodField()
     profile = ProfileSerializer()
+    assignation = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -36,7 +39,8 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
             "token",
             "profile",
-            "role"
+            "role",
+            "assignation"
         ]
         read_only_fields = ["id", "token", "role"]
 
@@ -81,6 +85,13 @@ class UserSerializer(serializers.ModelSerializer):
             token, created = Token.objects.get_or_create(user__id=data.id)
             return token.key
         else:
+            return None
+    
+    def get_assignation(self, data):
+        try:
+            assignation = LocationAssignation.objects.get(user=data)
+            return LocationAssignationSerializer(assignation).data
+        except LocationAssignation.DoesNotExist:
             return None
 
 
