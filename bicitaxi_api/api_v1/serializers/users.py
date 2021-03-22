@@ -25,7 +25,6 @@ class UserSerializer(serializers.ModelSerializer):
     email = serializers.CharField(required=True, label="email")
     token = serializers.SerializerMethodField()
     profile = ProfileSerializer()
-    assignation = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -39,8 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
             "token",
             "profile",
-            "role",
-            "assignation"
+            "role"
         ]
         read_only_fields = ["id", "token", "role"]
 
@@ -86,19 +84,13 @@ class UserSerializer(serializers.ModelSerializer):
             return token.key
         else:
             return None
-    
-    def get_assignation(self, data):
-        try:
-            assignation = LocationAssignation.objects.get(user=data)
-            return LocationAssignationSerializer(assignation).data
-        except LocationAssignation.DoesNotExist:
-            return None
 
 
 class UserSimpleSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, label="user id")
     profile = ProfileSerializer()
     last_connection = serializers.SerializerMethodField()
+    assignation = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -110,7 +102,8 @@ class UserSimpleSerializer(serializers.ModelSerializer):
             "is_active",
             "on_route",
             "profile",
-            "last_connection"
+            "last_connection",
+            "assignation"
         ]
         read_only_fields = ["id"]
 
@@ -119,6 +112,13 @@ class UserSimpleSerializer(serializers.ModelSerializer):
         if len(registers) > 0:
             return registers[0].date
         return None
+
+    def get_assignation(self, data):
+        try:
+            assignation = LocationAssignation.objects.get(user=data)
+            return LocationAssignationSerializer(assignation).data
+        except LocationAssignation.DoesNotExist:
+            return None
 
 
 class UserActivitySerializer(serializers.ModelSerializer):

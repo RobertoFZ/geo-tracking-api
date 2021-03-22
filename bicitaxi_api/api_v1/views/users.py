@@ -15,11 +15,11 @@ from datetime import datetime
 from bicitaxi_api.api_v1.models import User, Profile
 from bicitaxi_api.common.pagination import PaginationHandlerMixin
 from bicitaxi_api.settings import URL_SERVER
-from bicitaxi_api.api_v1.serializers.users import UserSerializer
+from bicitaxi_api.api_v1.serializers.users import UserSerializer, UserSimpleSerializer
 
 
 class UsersView(APIView, PaginationHandlerMixin):
-    serializer_class = UserSerializer
+    serializer_class = UserSimpleSerializer
     pagination_class = LimitOffsetPagination
 
     def get(self, request):
