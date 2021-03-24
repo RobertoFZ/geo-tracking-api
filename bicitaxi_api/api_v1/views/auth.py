@@ -90,7 +90,7 @@ class ResetPasswordView(APIView):
                 "emails/password_reset.html", {"password": password}
             )
             send_email(
-                "Nuevo contacto", content=content, to=[email], content_type="text/html"
+                "Tu nueva contraseña", content=content, to=[email], content_type="text/html"
             )
             return Response(status=status.HTTP_204_NO_CONTENT)
         except User.DoesNotExist:

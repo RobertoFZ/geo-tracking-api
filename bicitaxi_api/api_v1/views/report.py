@@ -82,6 +82,7 @@ class ReportView(APIView, PaginationHandlerMixin):
                 date__range=[start_date, end_date]
             ).order_by('date')
             time = 0.0
+            distance = 0.0
             last_register = None
             for register in locations:
                 print(register.date)
@@ -110,7 +111,8 @@ class ReportView(APIView, PaginationHandlerMixin):
                 'user': UserSimpleSerializer(user).data,
                 'start_date': start_date,
                 'end_date': end_date,
-                'time': time
+                'time': time,
+                'distance': distance
             })
 
         page = self.paginate_queryset(user_data)
