@@ -19,7 +19,8 @@ from bicitaxi_api.api_v1.serializers.users import UserSerializer, UserSimpleSeri
 
 
 class UsersView(APIView, PaginationHandlerMixin):
-    serializer_class = UserSimpleSerializer
+    serializer_class = UserSerializer
+    serializer_data_class = UserSimpleSerializer
     pagination_class = LimitOffsetPagination
 
     def get(self, request):
@@ -32,9 +33,9 @@ class UsersView(APIView, PaginationHandlerMixin):
             user.profile = Profile.objects.get(user=user)
         page = self.paginate_queryset(users)
         if page is not None and 'limit' in params:
-            response = self.get_paginated_response(self.serializer_class(page, many=True).data)
+            response = self.get_paginated_response(self.serializer_data_class(page, many=True).data)
         else:
-            response = self.serializer_class(users, many=True)
+            response = self.serializer_data_class(users, many=True)
         return Response(response.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -45,7 +46,7 @@ class UsersView(APIView, PaginationHandlerMixin):
 
             token, created = Token.objects.get_or_create(user=user)
 
-            response = self.serializer_class(user).data
+            response = self.serializer_data_class(user).data
 
             return Response(response, status=status.HTTP_201_CREATED)
         error_response = {
