@@ -165,7 +165,7 @@ class LocationZoneUsersView(APIView):
                 {"message": _("No tienes permisos para realizar está acción.")},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        location_zones = LocationZone.objects.filter(deleted_at=None)
+        location_zones = LocationZone.objects.filter(deleted_at=None).order_by('created_at')
         zones_data = []
 
         for location_zone in location_zones:
