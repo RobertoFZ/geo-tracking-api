@@ -165,7 +165,8 @@ class LocationZoneUsersView(APIView):
                 {"message": _("No tienes permisos para realizar está acción.")},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        location_zones = LocationZone.objects.filter(deleted_at=None).order_by('name')
+        location_zones = LocationZone.objects.filter(
+            deleted_at=None).order_by('name')
         zones_data = []
 
         for location_zone in location_zones:
@@ -178,5 +179,53 @@ class LocationZoneUsersView(APIView):
                 'location_zone': self.serializer_class(location_zone).data,
                 'users': UserActivitySerializer(users, many=True).data
             })
-        
+
+        return Response(zones_data, status=status.HTTP_200_OK)
+
+
+@authentication_classes((TokenAuthentication,))
+@permission_classes((IsAuthenticated,))
+class LocationZonesPerifonView(APIView):
+    serializer_class = LocationZoneSerializer
+
+    def get(self, request):
+        if request.user.role != 'admin':
+            return Response(
+                {"message": _("No tienes permisos para realizar está acción.")},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        location_zones = LocationZone.objects.filter(
+            deleted_at=None).order_by('name')
+        zones_data = []
+
+        for location_zone in location_zones:
+
+            points = LocationZonePoint.objects.filter(location_zone=location_zone)
+            mapped_points = []
+            for point in points:
+                mapped_points.append([point.longitude, point.latitude])
+            
+            zones_data.append({
+                'nombre_evento': None,
+                'fecha_evento': None,
+                'hora_ini_evento': None,
+                'hora_fin_evento': None,
+                'lugar_evento': None,
+                'municipio': None,
+                'localidad': None,
+                'dl': None,
+                'seccion': None,
+                'campania_responsable': None,
+                'descripcion': None,
+                'requisitos': None,
+                'responsable': None,
+                'puesto_responsable': None,
+                'celular1_responsable': None,
+                'celular2_responsable': None,
+                'contacto_seccion': None,
+                'contacto_celular': None,
+                'distrito': location_zone.name,
+                'ubicacion': mapped_points
+            })
+
         return Response(zones_data, status=status.HTTP_200_OK)

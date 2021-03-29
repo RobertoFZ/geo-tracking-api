@@ -6,4 +6,5 @@ urlpatterns = [
     path('', location_zones_views.LocationZonesView.as_view()),
     path('<int:location_zone_pk>', location_zones_views.LocationZoneView.as_view()),
     path('activity', location_zones_views.LocationZoneUsersView.as_view()),
+    path('json', location_zones_views.LocationZonesPerifonView.as_view()),
 ]
