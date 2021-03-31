@@ -46,7 +46,7 @@ class UsersView(APIView, PaginationHandlerMixin):
 
             token, created = Token.objects.get_or_create(user=user)
 
-            response = self.serializer_data_class(user).data
+            response = self.serializer_class(user).data
 
             return Response(response, status=status.HTTP_201_CREATED)
         error_response = {
