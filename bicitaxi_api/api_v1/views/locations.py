@@ -60,15 +60,20 @@ class LocationsView(APIView, PaginationHandlerMixin):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid():
-            location = serializer.create(serializer.validated_data)
-            response = self.serializer_class(location).data
-            return Response(response, status=status.HTTP_201_CREATED)
-        error_response = {
-            "message": _("Error al crear la ubicación"),
-            "errors": serializer.errors,
-        }
-        return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
+        now = datetime.now()
+
+        if now.hour >= 7 and now.hour < 23:
+            if serializer.is_valid():
+                location = serializer.create(serializer.validated_data)
+                response = self.serializer_class(location).data
+                return Response(response, status=status.HTTP_201_CREATED)
+            error_response = {
+                "message": _("Error al crear la ubicación"),
+                "errors": serializer.errors,
+            }
+            return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @authentication_classes((TokenAuthentication,))
@@ -102,13 +107,15 @@ class LastLocationsView(APIView):
 
     def get(self, request):
         if request.user.role == 'admin':
-            all_users = User.objects.filter(on_route=True)
+            all_users = User.objects.filter(on_route=True).order_by('name')
             users = []
             for user in all_users:
                 user.profile = Profile.objects.get(user=user)
                 last_location = None
-                last_locations = Location.objects.filter(user=user).order_by('-date')
-                zone_assignations = LocationAssignation.objects.filter(user=user)
+                last_locations = Location.objects.filter(
+                    user=user).order_by('-date')
+                zone_assignations = LocationAssignation.objects.filter(
+                    user=user)
                 location_zone = None
                 if len(zone_assignations) > 0:
                     location_zone = zone_assignations[0].location_zone

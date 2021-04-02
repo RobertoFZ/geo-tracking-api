@@ -171,7 +171,7 @@ class LocationZoneUsersView(APIView):
 
         for location_zone in location_zones:
             assignations = LocationAssignation.objects.filter(
-                location_zone=location_zone, user__on_route=True)
+                location_zone=location_zone, user__on_route=True).order_by('user__name')
             users = []
             for assignation in assignations:
                 users.append(assignation.user)

@@ -128,6 +128,17 @@ class UserView(APIView):
         user.profile = Profile.objects.get(user=user)
         serializer = self.serializer_class(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self, request, user_pk):
+        try:
+            user = User.objects.get(pk=user_pk)
+        except User.DoesNotExist:
+            return Response(
+                {"message": _("Usuario no encontrado")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @authentication_classes((TokenAuthentication,))
