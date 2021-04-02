@@ -107,7 +107,7 @@ class LastLocationsView(APIView):
 
     def get(self, request):
         if request.user.role == 'admin':
-            all_users = User.objects.filter(on_route=True).order_by('name')
+            all_users = User.objects.filter(on_route=True).order_by('first_name')
             users = []
             for user in all_users:
                 user.profile = Profile.objects.get(user=user)
