@@ -123,7 +123,7 @@ class LastLocationsView(APIView):
                     last_location = last_locations[0]
                 users.append({
                     'user': UserSimpleSerializer(user).data,
-                    'location': LocationSerializer(last_location).data if last_location != None else None,
+                    'location': LocationSerializer(last_location).data if last_location != None and user.on_route == True else None,
                     'location_zone': LocationZoneSerializer(location_zone).data if location_zone != None else None
                 })
 

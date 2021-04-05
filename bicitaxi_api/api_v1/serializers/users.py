@@ -109,7 +109,7 @@ class UserSimpleSerializer(serializers.ModelSerializer):
 
     def get_last_connection(self, user):
         registers = Location.objects.filter(user=user).order_by('-date')
-        if len(registers) > 0:
+        if len(registers) > 0 and user.on_route == True:
             return registers[0].date
         return None
 
