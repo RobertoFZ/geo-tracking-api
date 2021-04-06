@@ -97,7 +97,7 @@ class ReportView(APIView, PaginationHandlerMixin):
 
                     # Calculate distance
                     distance = distance_between_two_points(last_register, register)
-                    if distance < .03 and len(registers) > 0:
+                    if len(registers) > 0: # distance < .03 and is the condition if we need to avoid a lot of markers
                         registers[len(registers) - 1].date = register.date
                     else:
                         registers.append(register)
