@@ -125,7 +125,6 @@ class UserActivitySerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, label="user id")
     profile = serializers.SerializerMethodField()
     activity = serializers.SerializerMethodField()
-    time = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -138,7 +137,6 @@ class UserActivitySerializer(serializers.ModelSerializer):
             "on_route",
             "profile",
             "activity",
-            "time"
         ]
         read_only_fields = ["id"]
 
@@ -151,20 +149,8 @@ class UserActivitySerializer(serializers.ModelSerializer):
         registers = Location.objects.filter(
             user=user, date__range=(day_start, now))
         distance = 0.0
-        last_register = None
-        for register in registers:
-            if last_register:
-                distance += distance_between_two_points(
-                    last_register, register)
-            last_register = register
-        return distance
-    
-    def get_time(self, user):
-        day_start = datetime.datetime.now().replace(hour=0, minute=0, second=0)
-        now = datetime.datetime.now()
-        registers = Location.objects.filter(
-            user=user, date__range=(day_start, now))
         time = 0.0
+
         last_register = None
         for register in registers:
             if last_register:
@@ -175,5 +161,11 @@ class UserActivitySerializer(serializers.ModelSerializer):
                 minutes = (seconds % 3600) // 60
                 seconds = seconds % 60
                 time += minutes
+
+                distance += distance_between_two_points(
+                    last_register, register)
             last_register = register
-        return time
+        return {
+            'time': time,
+            'distance': distance
+        }
