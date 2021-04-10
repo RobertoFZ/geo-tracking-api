@@ -144,27 +144,52 @@ class UserActivitySerializer(serializers.ModelSerializer):
         return ProfileSerializer(Profile.objects.get(user=user)).data
 
     def get_activity(self, user):
-        day_start = datetime.datetime.now().replace(hour=0, minute=0, second=0)
-        now = datetime.datetime.now()
-        registers = Location.objects.filter(
-            user=user, date__range=(day_start, now))
+        morning_start = datetime.datetime.now().replace(hour=8, minute=0, second=0)
+        morning_end = datetime.datetime.now().replace(hour=14, minute=0, second=0)
+        evening_start = datetime.datetime.now().replace(hour=15, minute=0, second=0)
+        evening_end = datetime.datetime.now().replace(hour=23, minute=0, second=0)
+
+        morning_registers = Location.objects.filter(
+            user=user, date__range=(morning_start, morning_end))
+        
+        evening_registers = Location.objects.filter(
+            user=user, date__range=(evening_start, evening_end))
+
         distance = 0.0
         time = 0.0
 
         last_register = None
-        for register in registers:
+        for register in morning_registers:
             if last_register:
-                diff = register.date - last_register.date
-
-                days, seconds = diff.days, diff.seconds
-                hours = days * 24 + seconds // 3600
-                minutes = (seconds % 3600) // 60
-                seconds = seconds % 60
-                time += minutes
-
                 distance += distance_between_two_points(
                     last_register, register)
             last_register = register
+        
+        if len(morning_registers) > 1:
+            diff = morning_registers[0].date - morning_registers[len(morning_registers) - 1].date
+
+            days, seconds = diff.days, diff.seconds
+            hours = days * 24 + seconds // 3600
+            minutes = (seconds % 3600) // 60
+            seconds = seconds % 60
+            time += minutes
+        
+        last_register = None
+        for register in evening_registers:
+            if last_register:
+                distance += distance_between_two_points(
+                    last_register, register)
+            last_register = register
+        
+        if len(evening_registers) > 1:
+            diff = evening_registers[0].date - evening_registers[len(evening_registers) - 1].date
+
+            days, seconds = diff.days, diff.seconds
+            hours = days * 24 + seconds // 3600
+            minutes = (seconds % 3600) // 60
+            seconds = seconds % 60
+            time += minutes
+
         return {
             'time': time,
             'distance': distance
