@@ -84,25 +84,29 @@ class ReportView(APIView, PaginationHandlerMixin):
             time = 0.0
             distance = 0.0
             last_register = None
+            is_same_day = False
             for register in locations:
                 print(register.date)
-                if last_register:
+                if last_register and ((register.date.hour > 7 and register.date.hour <= 14) or (register.date.hour > 14 and register.date.hour <= 23)):
+                    is_same_day = last_register.date.day == register.date.day
+
                     diff = register.date - last_register.date
 
                     days, seconds = diff.days, diff.seconds
                     hours = days * 24 + seconds // 3600
                     minutes = (seconds % 3600) // 60
                     seconds = seconds % 60
-                    time += minutes
 
-                    # Calculate distance
-                    distance += distance_between_two_points(last_register, register)
-                    #if distance < .03 and len(registers) > 0:
-                    #    registers[len(registers) - 1].date = register.date
-                    #else:
-                    #    registers.append(register)
+                    if is_same_day:
+                        time += minutes
+                        # Calculate distance
+                        distance += distance_between_two_points(
+                            last_register, register)
+                        # if distance < .03 and len(registers) > 0:
+                        #    registers[len(registers) - 1].date = register.date
+                        # else:
+                        #    registers.append(register)
                     registers.append(register)
-
 
                 last_register = register
             user.profile = Profile.objects.get(user=user)
