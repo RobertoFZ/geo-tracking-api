@@ -68,7 +68,7 @@ class ReportView(APIView, PaginationHandlerMixin):
             }
             return Response(error_response, status=status.HTTP_400_BAD_REQUEST)
         zone_assignations = LocationAssignation.objects.filter(
-            location_zone=location_zone)
+            location_zone=location_zone, user__role='driver')
         users = []
 
         for assignation in zone_assignations:

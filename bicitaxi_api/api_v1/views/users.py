@@ -28,7 +28,7 @@ class UsersView(APIView, PaginationHandlerMixin):
             return
         params = request.query_params.keys()
 
-        users = User.objects.all().order_by('first_name')
+        users = User.objects.filter(role='driver').order_by('first_name')
         for user in users:
             user.profile = Profile.objects.get(user=user)
         page = self.paginate_queryset(users)
