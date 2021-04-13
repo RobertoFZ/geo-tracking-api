@@ -108,7 +108,9 @@ class UserSimpleSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
     def get_last_connection(self, user):
-        registers = Location.objects.filter(user=user).order_by('-date')[:1]
+        morning_start = datetime.datetime.now().replace(hour=8, minute=0, second=0)
+
+        registers = Location.objects.filter(user=user, date__range=(morning_start, datetime.datetime.now())).order_by('-date')[:1]
         if len(registers) > 0 and user.on_route == True:
             return registers[0].date
         return None
