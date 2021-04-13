@@ -89,7 +89,6 @@ class UserSerializer(serializers.ModelSerializer):
 class UserSimpleSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, label="user id")
     profile = ProfileSerializer()
-    last_connection = serializers.SerializerMethodField()
     assignation = serializers.SerializerMethodField()
 
     class Meta:
@@ -102,18 +101,9 @@ class UserSimpleSerializer(serializers.ModelSerializer):
             "is_active",
             "on_route",
             "profile",
-            "last_connection",
             "assignation"
         ]
         read_only_fields = ["id"]
-
-    def get_last_connection(self, user):
-        morning_start = datetime.datetime.now().replace(hour=8, minute=0, second=0)
-
-        registers = Location.objects.filter(user=user, date__range=(morning_start, datetime.datetime.now())).order_by('-date')[:1]
-        if len(registers) > 0 and user.on_route == True:
-            return registers[0].date
-        return None
 
     def get_assignation(self, data):
         try:
