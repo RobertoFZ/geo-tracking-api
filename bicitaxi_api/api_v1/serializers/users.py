@@ -110,7 +110,11 @@ class UserSimpleSerializer(serializers.ModelSerializer):
             assignation = LocationAssignation.objects.get(user=data)
             return {
                 'user_id': assignation.user_id,
-                'location_zone_id': assignation.location_zone_id
+                'location_zone_id': assignation.location_zone_id,
+                'location_zone': {
+                    'id': assignation.location_zone.id,
+                    'name': assignation.location_zone.name
+                }
             }
         except LocationAssignation.DoesNotExist:
             return None
