@@ -126,6 +126,10 @@ class LastLocationsView(APIView):
                 users.append({
                     'user': UserSimpleSerializer(user).data,
                     'location': LocationSerializer(last_location).data if last_location != None and user.on_route == True else None,
+                    'location_zone': {
+                        'id': location_zone.id,
+                        'name': location_zone.name
+                    }
                 })
 
             return Response(users, status=status.HTTP_200_OK)
