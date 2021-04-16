@@ -112,7 +112,7 @@ class LastLocationsView(APIView):
             for user in all_users:
                 user.profile = Profile.objects.get(user=user)
                 last_location = None
-                morning_start = datetime.now().replace(hour=0, minute=0, second=0)
+                morning_start = datetime.now().replace(hour=2, minute=0, second=0)
                 
                 last_locations = Location.objects.filter(
                     user=user, date__range=(morning_start, datetime.now())).order_by('-date')
