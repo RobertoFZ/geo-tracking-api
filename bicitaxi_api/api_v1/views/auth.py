@@ -67,6 +67,13 @@ class ResetPasswordView(APIView):
     def post(self, request):
         try:
             email = request.data["email"]
+            
+            password = None
+
+            try:
+                password = request.date["password"]
+            except:
+                pass
             users = User.objects.filter(email=email)
             if len(users) == 0:
                 return Response(
@@ -79,8 +86,9 @@ class ResetPasswordView(APIView):
                 "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<=>@#%&+"
             )
 
-            p = ""
-            password = p.join([choice(valores) for i in range(longitud)])
+            if password == None:
+                p = ""
+                password = p.join([choice(valores) for i in range(longitud)])
 
             user = users[0]
             user.set_password(password)
