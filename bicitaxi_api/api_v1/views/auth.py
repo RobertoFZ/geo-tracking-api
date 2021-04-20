@@ -71,7 +71,7 @@ class ResetPasswordView(APIView):
             password = None
 
             try:
-                password = request.date["password"]
+                password = request.data["password"]
             except:
                 pass
             users = User.objects.filter(email=email)
