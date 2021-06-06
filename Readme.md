@@ -1,9 +1,10 @@
-# Bicitaxi API
+# Geotracking API
 
-This is a simple bicitaxi restful api to any application who need organice notes.
+This is a simple geotracking Restful API.
 
 # Techs
 - Django
+- Dajngo restframework
 - Postgres
 
 # Useful commands
